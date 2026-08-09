@@ -1,104 +1,116 @@
-The FIFA World Cup is a global football competition contested by the various football-playing nations of the world. It is contested every four years and is the most prestigious and important trophy in the sport of football.
-The FIFA World Cup, often simply called the World Cup, is an international association football competition contested by the senior men's national teams of the members of the Fédération Internationale de Football Association (FIFA), the sport's global governing body. The championship has been awarded every four years since the inaugural tournament in 1930, except in 1942 and 1946 when it was not held because of the Second World War.
-The World Cups dataset shows all information about all the World Cups in history till 2014, while the World Cup Matches dataset shows all the results from the matches contested as part of the cups.
+# FIFA World Cup Analysis — 84 Years of Tournament Data
 
-****Problem Statement:-
+![Python](https://img.shields.io/badge/Python-3.9+-3776AB?logo=python&logoColor=white)
+![pandas](https://img.shields.io/badge/pandas-EDA-150458?logo=pandas&logoColor=white)
+![Seaborn](https://img.shields.io/badge/seaborn-visualisation-4c72b0)
+![Analysis](https://img.shields.io/badge/type-exploratory%20data%20analysis-blue)
 
-A new football club named ‘Brussels United FC’ has just been inaugurated. As a member of this club, you have been assigned a task to carry analysis on matches, players, and world cup data. Here we need to analyze the countries which have won the world cup the most with attendance, goal, and matches per cup based on cities. Also distribution of home and away goals. Whether playing in the home country is a factor for winning or not?
+Analysis of every FIFA World Cup from 1930 to 2014 across three linked datasets — tournaments,
+matches and players — answering a set of scouting questions posed by a newly formed club.
 
-****Steps needs to be followed-
+![Teams with most World Cup titles](assets/most-titles.png)
 
-Total goals scored by year
-Total matches played and qualified teams by year
-Matches with the highest number of attendance
-Cities that hosted highest world cup matches
-Average attendance by city
-Teams with the most world cup final victories
-World cup final results by nation
-Match outcomes by home and away teams
+---
 
-****Data Definition:-
+## Problem statement
 
-1. World Cup Matches Dataset
+A newly inaugurated football club, *Brussels United FC*, needs a factual briefing on World Cup
+history before making scouting and fixture decisions. The brief asks specific questions rather
+than a general survey:
 
-Year: The year in which the match was played
+- Which nations have won most, and when?
+- How have goals, attendance and tournament size changed over time?
+- Which cities and stadiums draw the biggest crowds?
+- **Is playing at home actually an advantage?**
 
-Datetime: The Date on which the match was played along with a 24 hour format time
+## Datasets
 
-Stage: The stage at which the match was played
+Three linked CSVs covering the tournament from its 1930 inauguration through 2014.
 
-Stadium: Stadium name where the match was held
+| File | Contents | Grain |
+|---|---|---|
+| `WorldCups.csv` | Winner, runners-up, third, fourth, goals, qualified teams, matches, attendance | One row per tournament |
+| `WorldCupMatches.csv` | Date, stage, stadium, city, both teams, goals, half-time goals, attendance, referees | One row per match |
+| `WorldCupPlayers.csv` | Team, coach, line-up, shirt number, player, position, events | One row per player per match |
 
-City: The city name, where the match was played
+## Tech stack
 
-Home Team Name: Home team country name
+pandas · NumPy · Matplotlib · Seaborn
 
-Home Team Goals: Total goals scored by the home team by the end of the match
+## Approach
 
-Away Team Goals: Total goals scored by the away team by the end of the match
+1. **Load and profile** all three datasets; reconcile the keys (`RoundID`, `MatchID`) that link them.
+2. **Clean** — handle missing values, correct dtypes, resolve historical country-name inconsistencies.
+3. **Aggregate** along each dimension the brief asks about: year, nation, city, stadium, home/away.
+4. **Visualise** each answer as a standalone chart.
 
-Away Team Name: Away team country name
+## Findings
 
-Win conditions: Special win condition (if any)
+### Tournament evolution
 
-Attendance: Total crowd present at the stadium
+![Goals scored by year](assets/goals-by-year.png)
 
-Half-time Home Goals: Goals scored by the home team until half time
+The field expanded in deliberate steps: **16 teams** from 1934 to 1978 (with two exceptions —
+15 in 1938 after Austria was absorbed into Germany post-qualification, and 13 in 1950 after India,
+Scotland and Turkey withdrew), **24 teams from 1982**, and **32 from 1998**, which opened the
+tournament to more nations from Africa, Asia and North America.
 
-Half-time Away Goals: Goals scored by the away team until half time
+![Qualified teams by year](assets/qualified-teams-by-year.png)
 
-Referee: Name of the first referee
+Total goals per tournament rises with the field size — the interesting question is whether goals
+*per match* followed, and it largely did not.
 
-Assistant 1: Name of the first assistant referee (linesman)
+### Titles
 
-Assistant 2: Name of the second assistant referee (linesman)
+Twenty tournaments have been won by **eight** national teams:
 
-RoundID: Unique ID of the Round
+| Titles | Nation |
+|---|---|
+| 5 | **Brazil** — 1958, 1962, 1970, 1994, 2002 |
+| 4 | Germany |
+| 4 | Italy |
+| 2 | Argentina |
+| 2 | Uruguay (inaugural winner, 1930) |
+| 1 | England · France · Spain |
 
-MatchID: Unique ID of the Match
+Brazil is also the only nation to have played in every single tournament.
 
-Home Team Initials: Home team country's three letter initials
+### Attendance
 
-Away Team Initials: Away team country's three left
+![Average attendance by city](assets/attendance-by-city.png)
 
-2. World Cup Players Dataset
+**Mexico City records the highest average attendance at 93,807** — comfortably ahead of any other
+host city. The busiest host city staged **23 matches**.
 
-RoundID: Unique ID of the Round
+### Home advantage
 
-MatchID: Unique ID of the Match
+![Match outcomes by home and away teams](assets/home-away-outcomes.png)
 
-Team Initials: Player's team country's three letter initials
+Across the full match history, **home teams win more often than away teams** — the home-advantage
+effect the brief asked about is visible in the data and holds across eras.
 
-Coach Name: Player's coach name
+## Answers to the brief
 
-Line-up: Indicates whether the player was in the starting line-up or not
+| Question | Answer |
+|---|---|
+| Most World Cup victories | Brazil, 5 titles |
+| Highest average attendance by city | Mexico City, 93,807 |
+| Most matches hosted by one city | 23 |
+| Number of winning nations | 8, across 20 tournaments |
+| Is home advantage real? | Yes — home teams win more matches than away teams |
 
-Shirt Number: Player's shirt number
+## Running it
 
-Player Name: Player's name
+```bash
+git clone https://github.com/Bennittah/Fifa.git
+cd Fifa
+pip install pandas numpy matplotlib seaborn jupyter
+jupyter notebook Fifa_eda_and_pre_processing.ipynb
+```
 
-Position: Position that the player played in
+All three CSVs are included in the repository. The notebook renders directly on GitHub with all
+outputs intact.
 
-Event: Important event involving the player (if any)
+---
 
-3. World Cup Dataset
-
-Year: Year in which the world cup was held
-
-Country: Country where the world cup was held
-
-Winner: Team that won the world cup
-
-Runners-Up: Team that came second
-
-Third: Team that came third
-
-Fourth: Team that came fourth
-
-GoalsScored: Total goals scored in the world cup
-
-QualifiedTeams: Number of teams that qualified for the world cup
-
-MatchesPlayed: Total matches played in the world cup
-
-Attendance: Total attendance in the world cup
+*Part of my applied analytics portfolio — see [my profile](https://github.com/Bennittah) for more.*
